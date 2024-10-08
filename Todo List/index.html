@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Just Do It - To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Font and Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            color: #f8c9b6;
+            margin-bottom: 20px;
+        }
+
+        /* Input Form */
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        #task-input {
+            width: 60%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 30px;
+            background-color: #333;
+            color: #fff;
+            outline: none;
+            margin-right: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            padding: 15px 25px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            background-color: #f8c9b6;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #e0b3a3;
+        }
+
+        /* Task List Section */
+        .task-list-section {
+            margin-top: 20px;
+        }
+
+        #task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #task-list li {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 15px 20px;
+            border-radius: 30px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #task-list li span {
+            color: #f8c9b6;
+            font-size: 1.2rem;
+        }
+
+        .delete-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Just do it.</h1>
+
+        <div class="input-section">
+            <form id="task-form">
+                <input type="text" id="task-input" placeholder="Add a task." required>
+                <button type="submit" class="btn">I Got This!</button>
+            </form>
+        </div>
+
+        <div class="task-list-section">
+            <ul id="task-list">
+                <!-- Tasks will appear here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadTasksFromLocalStorage();  // Load tasks when the page loads
+        });
+
+        document.getElementById('task-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const taskInput = document.getElementById('task-input').value;
+
+            if (taskInput) {
+                addTaskToList(taskInput);
+                saveTaskToLocalStorage(taskInput);
+
+                document.getElementById('task-input').value = '';  // Clear input field
+            }
+        });
+
+        // Function to add task to list
+        function addTaskToList(task) {
+            const taskList = document.getElementById('task-list');
+
+            const li = document.createElement('li');
+            const taskSpan = document.createElement('span');
+            taskSpan.textContent = task;
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.innerHTML = '&times;';
+            deleteBtn.onclick = function () {
+                deleteTaskFromLocalStorage(task);
+                taskList.removeChild(li);
+            };
+
+            li.appendChild(taskSpan);
+            li.appendChild(deleteBtn);
+            taskList.appendChild(li);
+        }
+
+        // Function to save tasks to localStorage
+        function saveTaskToLocalStorage(task) {
+            let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks.push(task);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // Function to load tasks from localStorage
+        function loadTasksFromLocalStorage() {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks.forEach(task => addTaskToList(task));
+        }
+
+        // Function to delete tasks from localStorage
+        function deleteTaskFromLocalStorage(taskToDelete) {
+            let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks = tasks.filter(task => task !== taskToDelete);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+    </script>
+</body>
+</html>
